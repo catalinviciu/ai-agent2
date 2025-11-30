@@ -108,7 +108,10 @@ export function FormPreview({ data, layoutMode }: FormPreviewProps) {
                                         {category}
                                     </h4>
 
-                                    <div className="grid grid-cols-1 gap-x-6 gap-y-0">
+                                    {/* Use grid layout for photos, single column for others */}
+                                    <div className={items.some(item => item.ValueType === 'PHOTO')
+                                        ? "grid grid-cols-2 gap-3"
+                                        : "grid grid-cols-1 gap-x-6 gap-y-0"}>
                                         {items.map((item) => (
                                             <MobileItemCard key={item.Position} item={item} mode={layoutMode} />
                                         ))}
@@ -130,12 +133,12 @@ function MobileItemCard({ item, mode }: { item: FormItem; mode: 'defects' | 'all
     // Special handling for Photos
     if (item.ValueType === 'PHOTO') {
         return (
-            <div className="py-3 border-b border-gray-200">
-                <div className="flex items-center justify-between mb-2">
+            <div className="py-2">
+                <div className="flex items-center gap-1 mb-2">
                     <span className="text-gray-900 font-medium text-sm">{item.Name}</span>
-                    {item.RequireValue && <span className="text-orange-600 text-[10px] font-bold uppercase">Required</span>}
+                    {item.RequireValue && <span className="text-blue-600 text-xs font-bold">*</span>}
                 </div>
-                <button className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center gap-2 text-gray-500 transition-all cursor-default">
+                <button className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center gap-2 text-gray-500 transition-all cursor-default">
                     <Camera className="w-4 h-4" />
                     <span className="text-xs font-bold">Take photo</span>
                 </button>

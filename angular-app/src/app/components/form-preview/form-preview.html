@@ -1,0 +1,148 @@
+<div
+    class="flex flex-col h-full bg-gray-50 rounded-xl overflow-hidden border border-gray-200 shadow-sm relative font-sans">
+    <!-- Mobile Viewport Container -->
+    <div class="flex-1 bg-gray-50 overflow-hidden flex flex-col relative">
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+            <div class="p-4 pb-24">
+                <!-- Form Name & Trip Selection (Static Preview) -->
+                <div class="mb-6">
+                    <div class="mb-4 pb-4 border-b border-gray-100">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Form
+                            Name</span>
+                        <span class="text-sm font-bold text-gray-900">{{ data?.Name }}</span>
+                    </div>
+
+                    <div class="flex gap-6 opacity-60 pointer-events-none grayscale-[0.5]">
+                        <div class="flex items-center gap-3 text-gray-900">
+                            <div
+                                class="w-5 h-5 rounded-full border-2 border-orange-600 flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 bg-orange-600 rounded-full"></div>
+                            </div>
+                            <span class="font-medium text-sm">Pre-trip</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-900">
+                            <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                            </div>
+                            <span class="font-medium text-sm">Post-trip</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title & Instructions -->
+                <div class="mb-4">
+                    <h1 class="text-xl font-bold text-gray-900 mb-1 m-0">Start inspection</h1>
+                    <p class="text-gray-500 text-xs leading-relaxed m-0">
+                        @if (layoutMode === 'defects') {
+                        Check items that have defects. Unchecked items are OK.
+                        } @else {
+                        Mark each item as pass or fail, then select Next.
+                        }
+                    </p>
+                </div>
+
+                <!-- Inspection Items -->
+                <div class="space-y-4">
+                    @for (group of groupedItems; track group.category) {
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wider text-gray-500 m-0">
+                            {{ group.category }}
+                        </h4>
+
+                        <!-- Use grid layout for photos, single column for others -->
+                        <div [class.grid]="hasPhoto(group.items)" [class.grid-cols-2]="hasPhoto(group.items)"
+                            [class.gap-3]="hasPhoto(group.items)" [class.grid-cols-1]="!hasPhoto(group.items)"
+                            [class.gap-x-6]="!hasPhoto(group.items)" [class.gap-y-0]="!hasPhoto(group.items)">
+                            @for (item of group.items; track item.Position) {
+                            <!-- Mobile Item Card Logic Inline -->
+
+                            <!-- PHOTO -->
+                            @if (item.ValueType === 'PHOTO') {
+                            <div class="py-2">
+                                <div class="flex items-center gap-1 mb-2">
+                                    <span class="text-gray-900 font-medium text-sm">{{ item.Name }}</span>
+                                    @if (item.RequireValue) { <span class="text-blue-600 text-xs font-bold">*</span> }
+                                </div>
+                                <button
+                                    class="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center gap-2 text-gray-500 transition-all cursor-default bg-transparent">
+                                    <lucide-icon [img]="Camera" class="w-4 h-4"></lucide-icon>
+                                    <span class="text-xs font-bold">Take photo</span>
+                                </button>
+                            </div>
+                            }
+
+                            <!-- TEXT -->
+                            @else if (item.ValueType === 'TEXT') {
+                            <div class="py-3 border-b border-gray-200">
+                                <span class="text-gray-900 font-medium text-sm block mb-2">{{ item.Name }}</span>
+                                <textarea placeholder="Enter comments..."
+                                    class="w-full p-3 border border-gray-200 rounded-lg text-sm focus:border-orange-500 focus:ring-0 outline-none min-h-[80px] resize-none bg-gray-50 font-sans"></textarea>
+                            </div>
+                            }
+
+                            <!-- CHECKBOX (Defects Mode) -->
+                            @else if (layoutMode === 'defects') {
+                            <div (click)="toggleChecked(item.Position)"
+                                class="flex items-center gap-3 py-3 border-b border-gray-200 cursor-pointer group">
+                                <div class="w-8 h-8 rounded-lg border flex items-center justify-center transition-all shrink-0"
+                                    [class.bg-red-50]="getItemState(item.Position).checked"
+                                    [class.border-red-500]="getItemState(item.Position).checked"
+                                    [class.text-red-600]="getItemState(item.Position).checked"
+                                    [class.bg-white]="!getItemState(item.Position).checked"
+                                    [class.border-gray-200]="!getItemState(item.Position).checked"
+                                    [class.text-gray-400]="!getItemState(item.Position).checked"
+                                    [class.hover:border-gray-300]="!getItemState(item.Position).checked"
+                                    [class.hover:bg-gray-50]="!getItemState(item.Position).checked">
+                                    @if (getItemState(item.Position).checked) {
+                                    <lucide-icon [img]="X" class="w-4 h-4"></lucide-icon>
+                                    }
+                                </div>
+                                <span class="text-gray-900 font-medium text-sm">{{ item.Name }}</span>
+                            </div>
+                            }
+
+                            <!-- CHECKBOX (Submit All Mode) -->
+                            @else {
+                            <div class="flex items-center justify-between py-3 border-b border-gray-200">
+                                <div class="flex-1 min-w-0 mr-4 flex items-center gap-1">
+                                    <span class="text-gray-900 font-medium text-sm truncate">{{ item.Name }}</span>
+                                    @if (item.RequireValue) { <span class="text-blue-600 text-xs font-bold">*</span> }
+                                </div>
+
+                                <div class="flex gap-2 shrink-0">
+                                    <button (click)="setStatus(item.Position, 'pass')"
+                                        class="w-8 h-8 rounded-lg border flex items-center justify-center transition-all bg-transparent p-0 cursor-pointer"
+                                        [class.bg-green-50]="getItemState(item.Position).status === 'pass'"
+                                        [class.border-green-500]="getItemState(item.Position).status === 'pass'"
+                                        [class.text-green-600]="getItemState(item.Position).status === 'pass'"
+                                        [class.bg-white]="getItemState(item.Position).status !== 'pass'"
+                                        [class.border-gray-200]="getItemState(item.Position).status !== 'pass'"
+                                        [class.text-gray-400]="getItemState(item.Position).status !== 'pass'"
+                                        [class.hover:border-gray-300]="getItemState(item.Position).status !== 'pass'"
+                                        [class.hover:bg-gray-50]="getItemState(item.Position).status !== 'pass'">
+                                        <lucide-icon [img]="Check" class="w-4 h-4"></lucide-icon>
+                                    </button>
+                                    <button (click)="setStatus(item.Position, 'fail')"
+                                        class="w-8 h-8 rounded-lg border flex items-center justify-center transition-all bg-transparent p-0 cursor-pointer"
+                                        [class.bg-red-50]="getItemState(item.Position).status === 'fail'"
+                                        [class.border-red-500]="getItemState(item.Position).status === 'fail'"
+                                        [class.text-red-600]="getItemState(item.Position).status === 'fail'"
+                                        [class.bg-white]="getItemState(item.Position).status !== 'fail'"
+                                        [class.border-gray-200]="getItemState(item.Position).status !== 'fail'"
+                                        [class.text-gray-400]="getItemState(item.Position).status !== 'fail'"
+                                        [class.hover:border-gray-300]="getItemState(item.Position).status !== 'fail'"
+                                        [class.hover:bg-gray-50]="getItemState(item.Position).status !== 'fail'">
+                                        <lucide-icon [img]="X" class="w-4 h-4"></lucide-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            }
+                            }
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
