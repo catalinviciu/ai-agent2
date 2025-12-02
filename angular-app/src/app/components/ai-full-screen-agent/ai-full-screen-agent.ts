@@ -59,6 +59,10 @@ export class AiFullScreenAgent implements OnInit, AfterViewChecked {
     includeMaintenance: null as boolean | null
   };
 
+  // Feedback State
+  feedbackState: 'up' | 'down' | null = null;
+  feedbackText: string = '';
+
   // Preview State
   layoutMode: 'defects' | 'all' = 'defects';
 
@@ -178,5 +182,12 @@ export class AiFullScreenAgent implements OnInit, AfterViewChecked {
 
   setLayoutMode(mode: 'defects' | 'all') {
     this.layoutMode = mode;
+  }
+
+  setFeedback(state: 'up' | 'down') {
+    this.feedbackState = state;
+    if (state === 'up') {
+      this.feedbackText = '';
+    }
   }
 }
