@@ -36,10 +36,10 @@
 
                         <!-- Photos Grid -->
                         @if (hasPhoto(group.items)) {
-                        <div class="grid grid-cols-4 gap-4">
+                        <div class="grid grid-cols-4 gap-4 items-end">
                             @for (item of group.items; track item.Position) {
                             <div class="flex flex-col gap-2">
-                                <div class="flex items-center gap-0.5">
+                                <div class="flex items-start gap-0.5 min-h-[44px]">
                                     <span
                                         class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-900">{{
                                         item.Name }}</span>
