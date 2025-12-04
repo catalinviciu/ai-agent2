@@ -6,7 +6,7 @@
             <div class="p-6 pb-24">
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
-                    <h2 class="text-sm font-bold text-gray-900 m-0">
+                    <h2 class="font-neue-text font-bold text-[16px] leading-[22px] tracking-normal text-gray-900 m-0">
                         DVIR Form: {{ data?.Name || 'Ford Ranger - Extended Compliance with Maintenance' }}
                     </h2>
                     <div
@@ -20,9 +20,15 @@
                     <h1
                         class="font-neue-text font-bold text-[16px] leading-[22px] tracking-normal text-gray-900 mb-1 m-0">
                         Start inspection</h1>
+                    @if (layoutMode === 'all') {
+                    <p class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-500 m-0">
+                        If a defect is found, select the cross. If no defect is found, select the check mark.
+                    </p>
+                    } @else {
                     <p class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-500 m-0">
                         Add inspection details including defects (if found).
                     </p>
+                    }
                 </div>
 
                 <!-- Inspection Items -->
@@ -54,25 +60,58 @@
                             }
                         </div>
                         } @else {
-                        <!-- Checkbox List -->
+                        <!-- Item List -->
                         <div class="flex flex-col border-t border-gray-100">
                             @for (item of group.items; track item.Position) {
-                            <div class="flex items-center gap-4 py-4 border-b border-gray-100">
-                                <!-- Checkbox -->
-                                <button (click)="toggleChecked(item.Position)"
-                                    class="w-5 h-5 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer bg-white"
-                                    [class.border-gray-300]="!getItemState(item.Position).checked"
-                                    [class.border-gray-900]="getItemState(item.Position).checked"
-                                    [class.bg-gray-900]="getItemState(item.Position).checked">
-                                    @if (getItemState(item.Position).checked) {
-                                    <lucide-icon [img]="Check" class="w-3.5 h-3.5 text-white"></lucide-icon>
-                                    }
-                                </button>
-
-                                <!-- Item Name -->
-                                <span
-                                    class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-900">{{
-                                    item.Name || 'Item' }}</span>
+                            <div class="flex items-center justify-between py-4 border-b border-gray-100">
+                                @if (layoutMode === 'all') {
+                                <!-- Submit All Mode: Item name on left, Check/X Buttons on right -->
+                                <div class="flex items-center gap-1">
+                                    <span
+                                        class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-900">{{
+                                        item.Name || 'Item' }}</span>
+                                    @if (item.RequireValue) { <span class="text-blue-500 text-xs font-bold">*</span> }
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button (click)="setStatus(item.Position, 'pass')"
+                                        class="w-10 h-10 rounded-lg border flex items-center justify-center transition-all cursor-pointer"
+                                        [class.border-gray-200]="getItemState(item.Position).status !== 'pass'"
+                                        [class.bg-white]="getItemState(item.Position).status !== 'pass'"
+                                        [class.border-green-500]="getItemState(item.Position).status === 'pass'"
+                                        [class.bg-green-50]="getItemState(item.Position).status === 'pass'">
+                                        <lucide-icon [img]="Check" class="w-5 h-5"
+                                            [class.text-gray-400]="getItemState(item.Position).status !== 'pass'"
+                                            [class.text-green-600]="getItemState(item.Position).status === 'pass'"></lucide-icon>
+                                    </button>
+                                    <button (click)="setStatus(item.Position, 'fail')"
+                                        class="w-10 h-10 rounded-lg border flex items-center justify-center transition-all cursor-pointer"
+                                        [class.border-gray-200]="getItemState(item.Position).status !== 'fail'"
+                                        [class.bg-white]="getItemState(item.Position).status !== 'fail'"
+                                        [class.border-red-500]="getItemState(item.Position).status === 'fail'"
+                                        [class.bg-red-50]="getItemState(item.Position).status === 'fail'">
+                                        <lucide-icon [img]="X" class="w-5 h-5"
+                                            [class.text-gray-400]="getItemState(item.Position).status !== 'fail'"
+                                            [class.text-red-600]="getItemState(item.Position).status === 'fail'"></lucide-icon>
+                                    </button>
+                                </div>
+                                } @else {
+                                <!-- Defects Only Mode: Checkbox on left, Item name on right -->
+                                <div class="flex items-center gap-4">
+                                    <button (click)="toggleChecked(item.Position)"
+                                        class="w-5 h-5 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer bg-white border-gray-300">
+                                        @if (getItemState(item.Position).checked) {
+                                        <lucide-icon [img]="Check" class="w-4 h-4 text-gray-900"></lucide-icon>
+                                        }
+                                    </button>
+                                    <div class="flex items-center gap-1">
+                                        <span
+                                            class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-900">{{
+                                            item.Name || 'Item' }}</span>
+                                        @if (item.RequireValue) { <span class="text-blue-500 text-xs font-bold">*</span>
+                                        }
+                                    </div>
+                                </div>
+                                }
                             </div>
                             }
                         </div>
