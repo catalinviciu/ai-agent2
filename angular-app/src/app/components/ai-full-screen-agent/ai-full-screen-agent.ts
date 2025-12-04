@@ -112,9 +112,14 @@ export class AiFullScreenAgent implements OnInit, AfterViewChecked {
     if (this.answers.vehicleModel.trim()) {
       this.addMessage('user', this.answers.vehicleModel);
       setTimeout(() => {
-        this.addMessage('ai', `Perfect! Now, how detailed do you want me to create your inspection form?`);
-        this.interviewStep = 1;
+        this.isTyping = true;
         this.cdr.detectChanges();
+        setTimeout(() => {
+          this.isTyping = false;
+          this.addMessage('ai', `Perfect! Now, how detailed do you want me to create your inspection form?`);
+          this.interviewStep = 1;
+          this.cdr.detectChanges();
+        }, 800);
       }, 500);
     }
   }
@@ -123,9 +128,14 @@ export class AiFullScreenAgent implements OnInit, AfterViewChecked {
     this.answers.vehicleModel = type;
     this.addMessage('user', type);
     setTimeout(() => {
-      this.addMessage('ai', `Perfect! Now, how detailed do you want me to create your inspection form?`);
-      this.interviewStep = 1;
+      this.isTyping = true;
       this.cdr.detectChanges();
+      setTimeout(() => {
+        this.isTyping = false;
+        this.addMessage('ai', `Perfect! Now, how detailed do you want me to create your inspection form?`);
+        this.interviewStep = 1;
+        this.cdr.detectChanges();
+      }, 800);
     }, 500);
   }
 

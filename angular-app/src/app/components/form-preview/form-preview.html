@@ -1,8 +1,8 @@
-<div class="flex flex-col h-full bg-white rounded-xl overflow-hidden relative font-sans">
+<div class="flex flex-col min-h-full bg-white rounded-xl relative font-sans">
     <!-- Mobile Viewport Container -->
-    <div class="flex-1 bg-white overflow-hidden flex flex-col relative">
+    <div class="flex-1 bg-white flex flex-col relative">
         <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar">
+        <div class="flex-1">
             <div class="p-6 pb-24">
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
@@ -17,8 +17,10 @@
 
                 <!-- Title & Instructions -->
                 <div class="mb-8">
-                    <h1 class="text-base font-bold text-gray-900 mb-1 m-0">Start inspection</h1>
-                    <p class="text-gray-500 text-xs m-0">
+                    <h1
+                        class="font-neue-text font-bold text-[16px] leading-[22px] tracking-normal text-gray-900 mb-1 m-0">
+                        Start inspection</h1>
+                    <p class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-500 m-0">
                         Add inspection details including defects (if found).
                     </p>
                 </div>
@@ -27,7 +29,8 @@
                 <div class="space-y-8">
                     @for (group of groupedItems; track group.category) {
                     <div>
-                        <h4 class="text-sm font-bold text-gray-900 mb-3 m-0">
+                        <h4
+                            class="font-neue-text font-bold text-[16px] leading-[22px] tracking-normal text-gray-900 mb-3 m-0">
                             {{ group.category }}
                         </h4>
 
@@ -37,11 +40,13 @@
                             @for (item of group.items; track item.Position) {
                             <div class="flex flex-col gap-2">
                                 <div class="flex items-center gap-0.5">
-                                    <span class="text-gray-900 text-xs">{{ item.Name }}</span>
+                                    <span
+                                        class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-900">{{
+                                        item.Name }}</span>
                                     @if (item.RequireValue) { <span class="text-blue-500 text-xs font-bold">*</span> }
                                 </div>
                                 <button
-                                    class="w-full aspect-square bg-gray-50 rounded-lg flex flex-col items-center justify-center gap-1 text-gray-500 hover:bg-gray-100 transition-all cursor-default border-none">
+                                    class="w-[183px] h-[80px] bg-gray-50 rounded-[12px] flex flex-col items-center justify-center gap-[10px] pt-[16px] pr-[47px] pb-[16px] pl-[47px] text-gray-500 hover:bg-gray-100 transition-all cursor-default border-none">
                                     <lucide-icon [img]="Camera" class="w-5 h-5 text-gray-900"></lucide-icon>
                                     <span class="text-[10px] text-gray-900">Take photo</span>
                                 </button>
@@ -65,7 +70,9 @@
                                 </button>
 
                                 <!-- Item Name -->
-                                <span class="text-sm text-gray-900">{{ item.Name || 'Item' }}</span>
+                                <span
+                                    class="font-neue-text font-normal text-[16px] leading-[22px] tracking-normal text-gray-900">{{
+                                    item.Name || 'Item' }}</span>
                             </div>
                             }
                         </div>
